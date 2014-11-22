@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.sap.hana.cloud</groupId>
+	<artifactId>spring-cloud-sap-parent</artifactId>
+	<version>1.0.0.RELEASE</version>
+	<name>spring-cloud-sap-parent</name>
+	<description>Spring Cloud Connectors for SAP HANA Cloud Platform (HCP) and SAP HANA DB platform</description>
+	<url>https://github.com/SAP/spring-cloud-sap</url>
+	<packaging>pom</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java-version>1.7</java-version>
+		<org.springframework.cloud-version>1.1.0.RELEASE</org.springframework.cloud-version>
+		<com.sap.hana.cloud.spring-cloud-sap-version>1.0.0.RELEASE</com.sap.hana.cloud.spring-cloud-sap-version>
+	</properties>
+	
+	<repositories>
+		<repository>
+			<id>org.springframework.maven.milestone</id>
+			<name>Spring Maven Milestone Repository</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-core</artifactId>
+			<version>${org.springframework.cloud-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-spring-service-connector</artifactId>
+			<version>${org.springframework.cloud-version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<organization>
+		<name>SAP SE</name>
+		<url>http://www.sap.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>steinermatt</id>
+			<name>Matthias Steiner</name>
+			<email>matthias.steiner@sap.com</email>
+			<organization>SAP SE</organization>
+      		<organizationUrl>http://www.sap.com</organizationUrl>
+		</developer>
+	</developers>
+	
+	<scm>
+		<connection>scm:git:git@github.com:SAP/spring-cloud-sap.git</connection>
+		<developerConnection>scm:git:git@github.com:SAP/spring-cloud-sap.git</developerConnection>
+    	<url>git@github.com:SAP/spring-cloud-sap.git</url>
+  	</scm>
+  
+  	<modules>
+	    <module>spring-cloud-sap-core</module>
+	    <module>spring-cloud-sap-connector</module>
+	    <module>spring-cloud-cloudfoundry-hana-service-connector</module>
+  	</modules>
+  
+  	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+
+		    <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-source-plugin</artifactId>
+		      <version>2.2.1</version>
+		      <executions>
+		        <execution>
+		          <id>attach-sources</id>
+		          <goals>
+		            <goal>jar-no-fork</goal>
+		          </goals>
+		        </execution>
+		      </executions>
+		    </plugin>
+		    <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-javadoc-plugin</artifactId>
+		      <version>2.9.1</version>
+		      <executions>
+		        <execution>
+		          <id>attach-javadocs</id>
+		          <goals>
+		            <goal>jar</goal>
+		          </goals>
+		        </execution>
+		      </executions>
+		    </plugin>
+		</plugins>
+  	</build>
+</project>

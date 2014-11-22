@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.sap.hana.cloud</groupId>
+		<artifactId>spring-cloud-sap-parent</artifactId>
+		<version>1.0.0.RELEASE</version>
+	</parent>
+	<artifactId>spring-cloud-cloudfoundry-hana-service-connector</artifactId>
+	<name>spring-cloud-cloudfoundry-hana-service-connector</name>
+	<description>Spring Cloud Service Connector for SAP HANA</description>
+	<url>https://github.com/SAP/spring-cloud-sap</url>
+	<packaging>jar</packaging>
+
+	<organization>
+		<name>SAP SE</name>
+		<url>http://www.sap.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>steinermatt</id>
+			<name>Matthias Steiner</name>
+			<email>matthias.steiner@sap.com</email>
+			<organization>SAP SE</organization>
+      		<organizationUrl>http://www.sap.com</organizationUrl>
+		</developer>
+	</developers>
+	
+	<scm>
+		<connection>scm:git:git@github.com:SAP/spring-cloud-sap.git</connection>
+		<developerConnection>scm:git:git@github.com:SAP/spring-cloud-sap.git</developerConnection>
+    	<url>git@github.com:SAP/spring-cloud-sap.git</url>
+  	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+			<version>${org.springframework.cloud-version}</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.hana.cloud</groupId>
+			<artifactId>spring-cloud-sap-core</artifactId>
+			<version>${com.sap.hana.cloud.spring-cloud-sap-version}</version>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<excludes>
+									<exclude>org.springframework.cloud:*</exclude>
+									<exclude>org.springframework:*</exclude>
+									<exclude>log4j:*</exclude>
+									<exclude>commons-logging:*</exclude>
+									<exclude>aopalliance:*</exclude>
+								</excludes>
+							</artifactSet>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

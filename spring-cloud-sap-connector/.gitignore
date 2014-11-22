@@ -1,0 +1,9 @@
+/bin
+/war
+*.DS_Store
+/target
+/build
+.project
+.classpath
+/.settings
+/derby.log
