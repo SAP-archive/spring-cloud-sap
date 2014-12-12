@@ -51,8 +51,6 @@ Include the connector for each cloud platform you want to be discoverable. Inclu
     <version>1.0.0.RELEASE</version>
 </dependency>
 ````
-> **Note**: For the time being these artifacts are not yet available via a central Maven repository (such as Maven Central). Consequently, you'd need to clone this project and perform a local Maven build to install the artifcats into your local Maven repository via the following command: `mvn clean package install`.
-
 
 ###Spring applications
 
@@ -66,5 +64,7 @@ Add the [`spring-service-connector`](https://github.com/spring-cloud/spring-clou
 </dependency>
 ````
 
+###Sample application
 
+A simple sample application is provided here: [https://github.com/SAP/cloud-hello-spring-cloud](https://github.com/SAP/cloud-hello-spring-cloud)
 

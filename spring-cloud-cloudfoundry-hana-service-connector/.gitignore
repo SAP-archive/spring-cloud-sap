@@ -7,3 +7,4 @@
 .classpath
 /.settings
 /derby.log
+/dependency-reduced-pom.xml

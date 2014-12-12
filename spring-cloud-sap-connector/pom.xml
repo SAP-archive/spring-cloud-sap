@@ -41,12 +41,12 @@
     	<url>git@github.com:SAP/spring-cloud-sap.git</url>
   	</scm>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>com.sap.hana.cloud</groupId>
 			<artifactId>spring-cloud-sap-core</artifactId>
 			<version>${com.sap.hana.cloud.spring-cloud-sap-version}</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	
