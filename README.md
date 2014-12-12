@@ -64,5 +64,7 @@ Add the [`spring-service-connector`](https://github.com/spring-cloud/spring-clou
 </dependency>
 ````
 
+###Sample application
 
+A simple sample application is provided here: [https://github.com/SAP/cloud-hello-spring-cloud](https://github.com/SAP/cloud-hello-spring-cloud)
 
