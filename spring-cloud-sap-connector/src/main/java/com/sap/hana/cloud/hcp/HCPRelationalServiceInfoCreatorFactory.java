@@ -8,8 +8,8 @@ import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.Binding;
 import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -88,48 +88,81 @@ public class HCPRelationalServiceInfoCreatorFactory
 	protected void initialize()
 	{
 		final String jndiNameRootName = "java:comp/env/jdbc";
-		
-		InitialContext ctx;
+		final String defaultJndiName = "defaultManagedDataSource";
+
+		InitialContext ctx = null;
 		DataSource ds = null;
-		String jndiName = null;
 
 		// check if we can obtain a DataSource via JNDI
 		try
 		{
 			ctx = new InitialContext();
 	
-			// get all defined datasources
-			NamingEnumeration<NameClassPair> nameEnum = ctx.list(jndiNameRootName);
-			
+			// loop bindings in context
+			NamingEnumeration<Binding> bindingEnum = ctx.listBindings(jndiNameRootName);
+		
 			int i = 0;
+			boolean defaultNameFound = false;
 			
-			while (nameEnum != null && nameEnum.hasMoreElements())
+			while (bindingEnum != null && bindingEnum.hasMoreElements())
 			{
-				NameClassPair pair = nameEnum.next();
-				 
-				if (LOG.isLoggable(Level.INFO))
+				Binding binding = bindingEnum.next();
+
+				try
 				{
-					LOG.logp(Level.INFO, HCPRelationalServiceInfoCreatorFactory.class.getName(), "initialize", "Found DataSource defined in JNDI: {0}", pair.getName());
-				} 
-				
-				jndiName = MessageFormat.format("{0}/{1}", jndiNameRootName, pair.getName());
-				ds = (DataSource) ctx.lookup(jndiName);
-				
-				if (ds != null && (i == 0) && (! nameEnum.hasMoreElements())) // in case we found a single (!) datasource
-				{
-					this.defaultDS = ds;
-					break;
+					
+					if (binding.getObject() instanceof DataSource)
+					{
+	
+						if (LOG.isLoggable(Level.INFO))
+						{
+							LOG.logp(Level.INFO, HCPRelationalServiceInfoCreatorFactory.class.getName(), "initialize", "Found DataSource defined in JNDI: {0}", binding.getName());
+						} 
+	
+						if (binding.getName().equals(defaultJndiName))
+						{
+							defaultNameFound = true;
+							ds = (DataSource) binding.getObject();
+							break;
+						}
+						else
+						{
+							if (i == 0)
+							{
+								ds = (DataSource) binding.getObject();
+							}						
+						}
+						
+						i++;
+						
+					}
+
 				}
-				
-				i++;
-				
-				if (! nameEnum.hasMoreElements()) // if we have more than one datasource
+				catch (Exception e)
 				{
-					final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), i);
+					// Ignore any Exceptions that e.g. binding.getObject() might cause and move on
+				}
+
+			}
+
+			if ((i == 1) || defaultNameFound) // in case we found a single datasource or the default datasource
+			{
+				this.defaultDS = ds;
+			}
+			else
+			{
+				if (i == 0)
+				{
+					final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
+					throw new CloudException(msg);
+				}
+				else
+				{
+					final String msg = MessageFormat.format("No unique service matching {0} found. Expected exactly 1 or one with name '{1}', but found {2} with other names.", DataSource.class.toString(), defaultJndiName, i);
 					throw new CloudException(msg);
 				}
 			}
-			
+
 			if (LOG.isLoggable(Level.INFO))
 			{
 				LOG.logp(Level.INFO, HCPRelationalServiceInfoCreatorFactory.class.getName(), "initialize", "Found DataSource: {0}", ds);
@@ -137,16 +170,8 @@ public class HCPRelationalServiceInfoCreatorFactory
 		}
 		catch (NamingException ex)
 		{
-			if (jndiName == null)
-			{
-				final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
-				throw new CloudException(msg);
-			}
-			else
-			{
-				final String message = MessageFormat.format("Could not obtain a reference to the Datasource with name: {0}", jndiName);
-				throw new CloudException(message, ex);
-			}
+			final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
+			throw new CloudException(msg);
 		}
 
 		Connection conn = null;
