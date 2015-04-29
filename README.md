@@ -48,7 +48,7 @@ Include the connector for each cloud platform you want to be discoverable. Inclu
 <dependency>
     <groupIdcom>com.sap.hana.cloud</groupId>
     <artifactId>spring-cloud-sap-connector</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.0.1.RELEASE</version>
 </dependency>
 ````
 
