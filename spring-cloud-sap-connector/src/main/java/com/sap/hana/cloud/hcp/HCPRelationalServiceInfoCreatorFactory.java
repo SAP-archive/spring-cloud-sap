@@ -34,7 +34,7 @@ public class HCPRelationalServiceInfoCreatorFactory
 	 * Singleton instance of {@link HCPRelationalServiceInfoCreatorFactory}
 	 */
 	private static final HCPRelationalServiceInfoCreatorFactory instance = new HCPRelationalServiceInfoCreatorFactory();
-
+	
 	/**
 	 * Returns a reference to the singleton instance of
 	 * {@link HCPRelationalServiceInfoCreatorFactory}.
@@ -46,6 +46,16 @@ public class HCPRelationalServiceInfoCreatorFactory
 	{
 		return instance;
 	}
+	
+	/**
+	 * Database information of the default {@link DataSource}
+	 */
+	protected DBInformation dbInfo = null;
+	
+	/**
+	 * The active relational DB.
+	 */
+	protected ServiceData activeRelationalService = null;
 
 	/**
 	 * Private constructor to ensure singleton pattern.
@@ -56,131 +66,26 @@ public class HCPRelationalServiceInfoCreatorFactory
 	}
 
 	/**
-	 * The default {@link DataSource} provided automatically by the runtime.
+	 * Initializes the {@link HCPRelationalServiceInfoCreatorFactory}. 
 	 * 
-	 * <p>
-	 * For further information please refer to:
-	 * https://help.hana.ondemand.com/help
-	 * /frameset.htm?39b1fcd42c864eea9fcdf381a64c13b8.html
-	 * </p>
+	 * @throws In case of an error 
 	 */
-	protected DataSource defaultDS = null;
-
-	/**
-	 * Database information of the default {@link DataSource}
-	 */
-	protected DBInformation dbInfo = null;
-
-	/**
-	 * The active relational DB.
-	 */
-	protected ServiceData activeRelationalService = null;
-
-	/**
-	 * Initializes the environment and searches for a default {@link DataSource}
-	 * provided automatically by the runtime.
-	 * 
-	 * <p>
-	 * Assumes that the default {@link DataSource} can be obtained via the
-	 * following JNDI name: <code>java:comp/env/jdbc/DefaultDB</code>
-	 * </p>
-	 */
-	protected void initialize()
+	protected void initialize() throws CloudException
 	{
-		final String jndiNameRootName = "java:comp/env/jdbc";
-		final String defaultJndiName = "defaultManagedDataSource";
-
-		InitialContext ctx = null;
-		DataSource ds = null;
-
-		// check if we can obtain a DataSource via JNDI
-		try
-		{
-			ctx = new InitialContext();
-	
-			// loop bindings in context
-			NamingEnumeration<Binding> bindingEnum = ctx.listBindings(jndiNameRootName);
+		DataSource ds = getDefaultDS();
 		
-			int i = 0;
-			boolean defaultNameFound = false;
-			
-			while (bindingEnum != null && bindingEnum.hasMoreElements())
-			{
-				Binding binding = bindingEnum.next();
-
-				try
-				{
-					
-					if (binding.getObject() instanceof DataSource)
-					{
-	
-						if (LOG.isLoggable(Level.INFO))
-						{
-							LOG.logp(Level.INFO, HCPRelationalServiceInfoCreatorFactory.class.getName(), "initialize", "Found DataSource defined in JNDI: {0}", binding.getName());
-						} 
-	
-						if (binding.getName().equals(defaultJndiName))
-						{
-							defaultNameFound = true;
-							ds = (DataSource) binding.getObject();
-							break;
-						}
-						else
-						{
-							if (i == 0)
-							{
-								ds = (DataSource) binding.getObject();
-							}						
-						}
-						
-						i++;
-						
-					}
-
-				}
-				catch (Exception e)
-				{
-					// Ignore any Exceptions that e.g. binding.getObject() might cause and move on
-				}
-
-			}
-
-			if ((i == 1) || defaultNameFound) // in case we found a single datasource or the default datasource
-			{
-				this.defaultDS = ds;
-			}
-			else
-			{
-				if (i == 0)
-				{
-					final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
-					throw new CloudException(msg);
-				}
-				else
-				{
-					final String msg = MessageFormat.format("No unique service matching {0} found. Expected exactly 1 or one with name '{1}', but found {2} with other names.", DataSource.class.toString(), defaultJndiName, i);
-					throw new CloudException(msg);
-				}
-			}
-
-			if (LOG.isLoggable(Level.INFO))
-			{
-				LOG.logp(Level.INFO, HCPRelationalServiceInfoCreatorFactory.class.getName(), "initialize", "Found DataSource: {0}", ds);
-			}
-		}
-		catch (NamingException ex)
+		if (LOG.isLoggable(Level.INFO))
 		{
-			final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
-			throw new CloudException(msg);
+			LOG.logp(Level.INFO, HCPRelationalServiceInfoCreatorFactory.class.getName(), "initialize", "Found DataSource: {0}", ds);
 		}
-
+		
 		Connection conn = null;
-
+		
 		try
 		{
 			conn = ds.getConnection();
 			DatabaseMetaData metaData = conn.getMetaData();
-
+			
 			// obtain information about the data source
 			this.dbInfo = new DBInformation(metaData);
 			
@@ -190,13 +95,12 @@ public class HCPRelationalServiceInfoCreatorFactory
 			}
 
 			this.activeRelationalService = ServiceData.getServiceDataByName(metaData.getDatabaseProductName());
-
 		}
 		catch (Exception ex)
 		{
-			final String message = "Could not obtain information about the default Datasource";
+			final String message = "Could not obtain meta data information about the default DataSource";
 			LOG.log(Level.SEVERE, message, ex);
-
+	
 			throw new CloudException(message, ex);
 		}
 		finally
@@ -207,12 +111,106 @@ public class HCPRelationalServiceInfoCreatorFactory
 				{
 					conn.close();
 				}
-				catch (SQLException e)
-				{
-				} // we are screwed!
+				catch (SQLException e) {} // we are screwed!
 			}
 		}
 	}
+	
+	/**
+	 * Scans the environment (= JNDI) and searches for a default {@link DataSource} provided automatically by the runtime.
+	 * 
+	 * <p>For further information please refer to:
+	 * https://help.hana.ondemand.com/help/frameset.htm?39b1fcd42c864eea9fcdf381a64c13b8.html
+	 * </p>
+	 * 
+	 * @return The default {@link DataSource} or <code>null</code> if no default {@link DataSource} was found
+	 * @throws In case of an error finding the default {@link DataSource} 
+	 */
+	public static DataSource getDefaultDS() throws CloudException
+	{
+		final String jndiNameRootName = "java:comp/env/jdbc";
+		final String defaultJndiName = "defaultManagedDataSource";
+
+		InitialContext ctx = null;
+		DataSource retVal = null;
+
+		// check if we can obtain a DataSource via JNDI
+		try
+		{
+		  ctx = new InitialContext();
+
+		  // loop bindings in context
+		  NamingEnumeration<Binding> bindingEnum = ctx.listBindings(jndiNameRootName);
+
+		  int i = 0;
+		  boolean defaultNameFound = false;
+		  
+		  while (bindingEnum != null && bindingEnum.hasMoreElements())
+		  {
+		    Binding binding = bindingEnum.next();
+
+		    try
+		    {
+		      
+		      if (binding.getObject() instanceof DataSource)
+		      {
+		        if (LOG.isLoggable(Level.FINE))
+		        {
+		          LOG.logp(Level.FINE, HCPRelationalServiceInfoCreatorFactory.class.getName(), "getDefaultDS", "Found DataSource defined in JNDI: {0}", binding.getName());
+		        } 
+
+		        if (binding.getName().equals(defaultJndiName))
+		        {
+		          defaultNameFound = true;
+		          retVal = (DataSource) binding.getObject();
+		          break;
+		        }
+		        else
+		        {
+		          if (i == 0)
+		          {
+		            retVal = (DataSource) binding.getObject();
+		          }						
+		        }
+		        
+		        i++;
+		      }
+		    }
+		    catch (Exception e)
+		    {
+		      // ignore any Exceptions that e.g. binding.getObject() might cause and move on
+		    }
+		  }
+
+		  if ((i == 1) || defaultNameFound) // in case we found a single datasource or the default datasource
+		  {
+		    // all is well
+		  }
+		  else
+		  {
+		    if (i == 0)
+		    {
+		      final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
+		      throw new CloudException(msg);
+		    }
+		    else
+		    {
+		      final String msg = MessageFormat.format("No unique service matching {0} found. Expected exactly 1 or one with name '{1}', but found {2} with other names.", DataSource.class.toString(), defaultJndiName, i);
+		      throw new CloudException(msg);
+		    }
+		  }
+
+		}
+		catch (NamingException ex)
+		{
+		  final String msg = MessageFormat.format("No unique service matching {0} found. Expected 1, found {1}", DataSource.class.toString(), 0);
+		  throw new CloudException(msg);
+		}
+		
+		return retVal;
+	}
+	
+	
 
 	/**
 	 * Returns the respective {@link ServiceInfoCreator} for the {@link RelationalServiceInfo} associated with the bound {@link @DataSource}.
@@ -239,19 +237,11 @@ public class HCPRelationalServiceInfoCreatorFactory
 		return retVal;
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public RelationalServiceInfo getActiveRelationalServiceInfo()
 	{
 		return getActiveRelationalServiceInfoCreator().createServiceInfo(this.activeRelationalService);
 	}
 	
-	/**
-	 * 
-	 * @return
-	 */
 	public DBInformation getDbInfo()
 	{
 		return this.dbInfo;
@@ -287,7 +277,6 @@ public class HCPRelationalServiceInfoCreatorFactory
 			driverVersion = metaData.getDriverVersion();
 
 			userName = metaData.getUserName();
-
 		}
 
 		public String getUrl()
@@ -341,11 +330,6 @@ public class HCPRelationalServiceInfoCreatorFactory
 			return str.toString();
 		}
 		
-	}
-
-	public DataSource getDefaultDS()
-	{
-		return this.defaultDS;
 	}
 
 	public ServiceData getActiveRelationalService()
