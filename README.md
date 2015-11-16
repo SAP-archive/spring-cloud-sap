@@ -12,7 +12,7 @@ For more information regarding `Cloud Connectors` please refer to the respective
 The project contains three submodules:
 
 
-- **[spring-cloud-sap-core](spring-cloud-sap-core)**: The core library provides common data types needed by other modules. **Note:** The content is _sharded_ into the the other submodules during the Maven build.
+- **[spring-cloud-sap-core](spring-cloud-sap-core)**: The core library provides common data types needed by the other modules/connectors. 
 - **[spring-cloud-sap-connector](spring-cloud-sap-connector)**: `Cloud Connector` for [SAP HANA Cloud Platform](http://hcp.sap.com).
 - **[spring-cloud-cloudfoundry-hana-service-connector](spring-cloud-cloudfoundry-hana-service-connector)**: A `Service Connector` for SAP HANA, SAP's in-memory database platform, to be used in a Cloud Foundry environment. This module is supposed to accompany the standard [Cloud Foundry Cloud Connector](https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-cloudfoundry-connector). 
 
@@ -41,14 +41,14 @@ Include the connector for each cloud platform you want to be discoverable. Inclu
 <dependency>
     <groupIdcom>com.sap.hana.cloud</groupId>
     <artifactId>spring-cloud-cloudfoundry-hana-service-connector</artifactId>
-    <version>1.0.2.RELEASE</version>
+    <version>1.0.3.RELEASE</version>
 </dependency>
 
 <!-- If you intend to deploy the app to SAP HANA Cloud Platform-->
 <dependency>
     <groupIdcom>com.sap.hana.cloud</groupId>
     <artifactId>spring-cloud-sap-connector</artifactId>
-    <version>1.0.2.RELEASE</version>
+    <version>1.0.3.RELEASE</version>
 </dependency>
 ````
 
