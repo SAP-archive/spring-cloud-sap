@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.sap.hana.cloud</groupId>
 		<artifactId>spring-cloud-sap-parent</artifactId>
-		<version>1.0.3.RELEASE</version>
+		<version>1.0.4.RELEASE</version>
 	</parent>
 	<artifactId>spring-cloud-sap-connector</artifactId>
 	<name>spring-cloud-sap-connector</name>
@@ -46,7 +46,6 @@
 			<groupId>com.sap.hana.cloud</groupId>
 			<artifactId>spring-cloud-sap-core</artifactId>
 			<version>${com.sap.hana.cloud.spring-cloud-sap-version}</version>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 

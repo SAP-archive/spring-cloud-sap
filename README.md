@@ -41,14 +41,14 @@ Include the connector for each cloud platform you want to be discoverable. Inclu
 <dependency>
     <groupIdcom>com.sap.hana.cloud</groupId>
     <artifactId>spring-cloud-cloudfoundry-hana-service-connector</artifactId>
-    <version>1.0.3.RELEASE</version>
+    <version>1.0.4.RELEASE</version>
 </dependency>
 
 <!-- If you intend to deploy the app to SAP HANA Cloud Platform-->
 <dependency>
     <groupIdcom>com.sap.hana.cloud</groupId>
     <artifactId>spring-cloud-sap-connector</artifactId>
-    <version>1.0.3.RELEASE</version>
+    <version>1.0.4.RELEASE</version>
 </dependency>
 ````
 
