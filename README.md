@@ -52,7 +52,7 @@ Include the connector for each cloud platform you want to be discoverable. Inclu
 </dependency>
 ````
 
-###Spring applications
+### Spring applications
 
 Add the [`spring-service-connector`](https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-spring-service-connector) in addition to your cloud connectors:
 
@@ -64,7 +64,7 @@ Add the [`spring-service-connector`](https://github.com/spring-cloud/spring-clou
 </dependency>
 ````
 
-###Sample application
+### Sample application
 
 A simple sample application is provided here: [https://github.com/SAP/cloud-hello-spring-cloud](https://github.com/SAP/cloud-hello-spring-cloud)
 
