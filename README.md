@@ -16,11 +16,11 @@ The project contains three submodules:
 - **[spring-cloud-sap-connector](spring-cloud-sap-connector)**: `Cloud Connector` for [SAP HANA Cloud Platform](http://hcp.sap.com).
 - **[spring-cloud-cloudfoundry-hana-service-connector](spring-cloud-cloudfoundry-hana-service-connector)**: A `Service Connector` for SAP HANA, SAP's in-memory database platform, to be used in a Cloud Foundry environment. This module is supposed to accompany the standard [Cloud Foundry Cloud Connector](https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-cloudfoundry-connector). 
 
-##Getting Started
+## Getting Started
 
 The connectors are written for Maven; simply include the appropriate dependencies for your build system.
 
-###Including cloud connectors
+### Including cloud connectors
 
 Include the connector for each cloud platform you want to be discoverable. Including multiple connectors is perfectly fine; each connector will determine whether it should be active in a particular environment.
 
