@@ -27,6 +27,8 @@ public class HANAServiceInfoCreator extends RelationalServiceInfoCreator<HANASer
 	@Override
 	public HANAServiceInfo createServiceInfo(String id, String url) 
 	{
+		url = url.replace("/null", "");
+		url += "&encrypt=true&validateCertificate=true";
 		return new HANAServiceInfo(id, url);
 	}
 	
