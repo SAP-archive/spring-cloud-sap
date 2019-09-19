@@ -1,6 +1,15 @@
-# Spring Cloud Connector for SAP HANA Cloud Platform (HCP) 
 
-This project provides **Cloud Connectors** for [SAP HANA Cloud Platform](http://hcp.sap.com) (HCP) to be used in conjunction with the other connectors of the [Spring Cloud](http://projects.spring.io/spring-cloud/) project. More specifically, it adds HCP as an alternative runtime environment supported by **Spring Cloud**.
+![](https://img.shields.io/badge/STATUS-NOT%20CURRENTLY%20MAINTAINED-red.svg?longCache=true&style=flat)
+
+# Important Notice
+SAP has decided to stop the maintenance of this open source project and hence it'll soon be sunsetted and archived. 
+
+Going forward, please look at [SAP Cloud Platform Appliation Programming Model](https://cap.cloud.sap) as the recommended approach to develop cloud applications with SAP Cloud Platform. 
+
+
+# Spring Cloud Connector for SAP Cloud Platform  
+
+This project provides **Cloud Connectors** for [SAP  Cloud Platform](http://cloudplatform.sap.com) to be used in conjunction with the other connectors of the [Spring Cloud](http://projects.spring.io/spring-cloud/) project. More specifically, it adds SAP Cloud Platfom as an alternative runtime environment supported by **Spring Cloud**.
 
 For more information regarding `Cloud Connectors` please refer to the respective documentation: 
 
@@ -13,7 +22,7 @@ The project contains three submodules:
 
 
 - **[spring-cloud-sap-core](spring-cloud-sap-core)**: The core library provides common data types needed by the other modules/connectors. 
-- **[spring-cloud-sap-connector](spring-cloud-sap-connector)**: `Cloud Connector` for [SAP HANA Cloud Platform](http://hcp.sap.com).
+- **[spring-cloud-sap-connector](spring-cloud-sap-connector)**: `Cloud Connector` for [SAP Cloud Platform](http://cloudplatform.sap.com).
 - **[spring-cloud-cloudfoundry-hana-service-connector](spring-cloud-cloudfoundry-hana-service-connector)**: A `Service Connector` for SAP HANA, SAP's in-memory database platform, to be used in a Cloud Foundry environment. This module is supposed to accompany the standard [Cloud Foundry Cloud Connector](https://github.com/spring-cloud/spring-cloud-connectors/tree/master/spring-cloud-cloudfoundry-connector). 
 
 ## Getting Started
