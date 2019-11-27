@@ -2,7 +2,10 @@ package com.sap.hana.cloud.hcp.cf;
 
 import static org.springframework.cloud.service.common.RelationalServiceInfo.JDBC_PREFIX;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.cloud.cloudfoundry.RelationalServiceInfoCreator;
