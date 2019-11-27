@@ -44,7 +44,7 @@ public class HANAServiceInfoCreator extends RelationalServiceInfoCreator<HANASer
 
 		String username = getStringFromCredentials(credentials, "user", "username");
 		String password = (String) credentials.get("password");
-
+		String url = getStringFromCredentials(credentials, "url");
 		String query = getQueryFromUrl(url);
 		String uri = new UriInfo(getDefaultUriScheme(), host, port, username, password, null, query).toString();
 		return createServiceInfo(id, uri);
