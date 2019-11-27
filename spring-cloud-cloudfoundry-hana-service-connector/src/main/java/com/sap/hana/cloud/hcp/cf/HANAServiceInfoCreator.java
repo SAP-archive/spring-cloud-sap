@@ -2,7 +2,10 @@ package com.sap.hana.cloud.hcp.cf;
 
 import static org.springframework.cloud.service.common.RelationalServiceInfo.JDBC_PREFIX;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.cloud.cloudfoundry.RelationalServiceInfoCreator;
@@ -44,12 +47,21 @@ public class HANAServiceInfoCreator extends RelationalServiceInfoCreator<HANASer
 
 		String username = getStringFromCredentials(credentials, "user", "username");
 		String password = (String) credentials.get("password");
-
-		String schema = (String) credentials.get("schema"); // passed as query
-		
-		String uri = new UriInfo(getDefaultUriScheme(), host, port, username, password, null, "currentschema=" + schema).toString();
-
+		String url = getStringFromCredentials(credentials, "url");
+		String query = getQueryFromUrl(url);
+		String uri = new UriInfo(getDefaultUriScheme(), host, port, username, password, null, query).toString();
 		return createServiceInfo(id, uri);
+    }
+
+	private String getQueryFromUrl(final String urlFromCredentials) {
+		String trimmedUrl = urlFromCredentials.replaceFirst("jdbc:", ""); // trim off jdbc so it's parsable as an URL
+		try {
+			URI uri = new URI(trimmedUrl);
+			return uri.getQuery();
+		} catch (URISyntaxException e) {
+			LOG.log(Level.SEVERE,"Invalid URI " + trimmedUrl + " in credentials, falling back to empty query String");
+			return "";
+		}
 	}
 	
 	@Override
