@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.sap.hana.cloud</groupId>
 	<artifactId>spring-cloud-sap-parent</artifactId>
-	<version>1.0.4.RELEASE</version>
+	<version>1.0.4.RELEASE-PATCHED</version>
 	<name>spring-cloud-sap-parent</name>
 	<description>Spring Cloud Connectors for SAP HANA Cloud Platform (HCP) and SAP HANA DB platform</description>
 	<url>https://github.com/SAP/spring-cloud-sap</url>
